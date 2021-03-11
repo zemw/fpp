@@ -1,0 +1,309 @@
+---
+title: "Time Series in R"
+output:
+  html_document:
+    toc: yes
+    df_print: paged
+  html_notebook:
+    toc: yes
+---
+
+
+### Base R Object: `ts`
+
+Regularly spaced time series data can be represented as objects of class `ts`.
+R modeling functions that work with `ts` objects include `arima`, `forecast`, `strucchange`, etc.
+
+Creating a `ts` object:
+
+```{r, eval=FALSE}
+y <- ts(data = 1:12, frequency = 12, start=c(1990,1), end=c(1990,12))
+```
+
+
+`ts` objects have their own plot method (`plot.ts`).
+
+```{r} 
+# sunspots is a `ts` object
+plot(sunspots, main = "Monthly Sunspot Numbers, 1749-1983") 
+```
+
+To subset a `ts` object and preserve the date information, use the `window()` function.
+
+```{r}
+window(sunspots, start = c(1950,1), end = c(1950,12))
+```
+
+Creating lagged data:
+
+```{r, eval=FALSE}
+stats::lag(x)  # lag the data by 1 period
+stats::lag(x, k = 12)  # lag the data by 12 periods
+```
+
+Creating differences:
+
+```{r, eval=FALSE}
+base::diff(x)  # first difference
+base::diff(x, lag=12) # annual difference
+```
+
+To combine multiple `ts` objects into a single object, use the `cbind()` function.
+The combined object is assigned the additional class `mts` (multiple time series).
+
+```{r, eval=FALSE}
+z <- cbind(x, y)
+```
+
+Plot of `mts` objects puts each series in a separate panel. 
+
+```{r}
+plot(cbind(sunspots, base::diff((sunspots))), main = "Sunspots")
+```
+
+
+### Ordered Observations: `zoo` 
+
+The `ts` class is quite limited. Irregular spacing data cannot be represented using the `ts` object. 
+
+The `zoo` (abbr. Zeileis' Ordered Observations) class was designed to handle time series data with an arbitrary ordered time index. 
+A `zoo` object essentially attaches date information stored in a vector with data information stored in a matrix.
+
+```{r, message=FALSE}
+library(zoo)
+```
+
+To create a `zoo` object one needs an ordered time index and data. 
+Typically, the time index is an object of class `Date`, `POSIXct`, `yearmon`, `yearqtr`, or `timeDate`.
+
+```{r, eval=FALSE}
+t <- seq(as.Date("1993/3/1"),  as.Date("2003/3/1"), "months")
+x <- cumsum(rnorm(length(t)))
+z <- zoo(x = x, order.by = t)
+```
+
+Creating `zoo` object from `ts`:
+
+```{r}
+sunspots_zoo <- as.zoo(sunspots)
+class(sunspots_zoo)
+```
+
+The `plot()` function can be used to plot `zoo` objects. 
+
+```{r}
+plot(sunspots_zoo, main="Sunspots, 1749-1983")
+```
+
+The time index and data can be extracted using the `index()` and `coredata()` functions.
+
+```{r, eval=FALSE}
+index(x)
+coredata(x)
+```
+
+
+To combine multiple `zoo` objects, use either `cbind()` or `merge()`. 
+Use `cbind()` when combining `zoo` objects with the same time index.
+Use `merge()` when the objects have different time indexes. 
+
+```{r, eval=FALSE}
+merge(x, y) # default outer join
+merge(x, y, join="inner")
+merge(x, y, join="right", fill=na.locf) # last observation carry forward
+```
+
+Dealing with missing values:
+
+```{r, eval=FALSE}
+na.locf(xts_object, na.rm = TRUE, fromLast = FALSE, maxgap = Inf) 
+na.fill(object, fill, ...)  # replacing NAs
+na.trim(object, ...)  # trimming NAs
+na.omit(object, ...)  # removing NAs
+na.approx(object, ...)  # linear interpolation
+```
+
+
+Reading and writing zoo series:
+
+```{r, eval=FALSE}
+read.zoo("foo.csv", FUN = as.yearmon, index.column = 1)
+read.zoo("foo.tab", format = "%m/%d/%Y")
+```
+
+
+`tseries` is a time series analysis and computational finance package that works with `zoo` objects. 
+
+```{r, message=FALSE}
+library(tseries)
+```
+
+Download historical stock quote from Yahoo Finance:
+
+```{r, message=FALSE}
+sbux_c <- get.hist.quote(instrument = "MSFT", quote = "Close", retclass = "zoo")
+```
+```{r}
+plot(sbux_c)
+```
+
+### Extensible Time Series: `xts`
+
+`xts` (eXtensible Time Series) is a powerful package that provides an extensible time series class, enabling uniform handling of many R time series classes by extending `zoo`.
+
+```{r, message=FALSE}
+library(xts)
+```
+
+Creating `xts` object:
+
+```{r, eval=FALSE}
+y <- xts(x = 1:100, order.by = Sys.Date() + 1:100)
+```
+
+Converting to `xts`:
+
+```{r sunspots}
+sunspots_xts <- as.xts(sunspots)
+plot(sunspots_xts)
+```
+
+`xts` object also works with `ggplot2`.
+
+```{r}
+library(ggplot2)
+autoplot(sunspots_xts)
+```
+
+Subsetting:
+
+```{r eval=FALSE}
+sunspots_xts["1900"]
+sunspots_xts["1900/1901-07"]
+sunspots_xts["1900-03/1901-07"]
+```
+
+Periodicity:
+
+```{r eval=FALSE}
+periodicity(sunspots_xts)
+to.yearly(sunspots_xts)  # convert to yearly OHLC
+to.period(sunspots_xts, period = "years") 
+```
+
+Aggregating:
+
+```{r}
+sunspots_xts_yr <- apply.yearly(sunspots_xts, FUN = mean)
+plot(sunspots_xts_yr)
+```
+
+Continuous rolling windows:
+
+```{r}
+sunspots_xts_ma <- rollapply(sunspots_xts, width=120, FUN=mean)
+plot(merge(sunspots_xts, sunspots_xts_ma))
+```
+
+### Tidy Time Series: `tsibble`
+
+`tsibble` is a variation of tidy data object `tibble` that deals with temporal data. 
+
+```{r}
+library(fpp3)  # a short cut to load all tidy-related packages
+```
+
+Creating `tsibble` object:
+
+```{r, eval=FALSE}
+y <- tsibble(
+  Year = 2015:2019,
+  Observation = c(123, 39, 78, 52, 110),
+  index = Year
+)
+```
+
+Converting to `tsibble` object:
+
+```{r, eval=FALSE}
+z %>%
+  mutate(Month = yearmonth(Month)) %>%
+  as_tsibble(index = Month)
+```
+
+Generating white-noise:
+
+```{r}
+tsibble(period = 1:100, wn = rnorm(100), index = period) %>% autoplot(wn)
+```
+
+Aggregating over calendar periods:
+
+```{r}
+vic_elec %>%
+  index_by(date = ~ as_date(.)) %>% 
+  summarise(
+    ttl_demand = sum(Demand, na.rm = T),
+    avg_temp = mean(Temperature, na.rm = T)
+    )
+```
+
+Tidy time series plot:
+
+```{r, ansett}
+ansett %>% 
+  filter(Airports == "MEL-SYD") %>%
+  autoplot(Passengers)
+```
+
+Seasonal plots:
+
+```{r, PBS}
+PBS %>%
+  filter(ATC2 == "A10") %>%
+  select(Month, Concession, Type, Cost) %>%
+  summarise(TotalC = sum(Cost)) %>%
+  mutate(Cost = TotalC / 1e6) -> a10
+
+a10 %>% gg_season(Cost) 
+```
+
+Seasonal subseries plots:
+
+```{r}
+a10 %>% gg_subseries(Cost)
+```
+
+Correlation matrix: 
+
+```{r tourism, message=FALSE}
+library(GGally)
+tourism %>%
+  group_by(State) %>%
+  summarise(Trips = sum(Trips)) %>%
+  pivot_wider(values_from=Trips, names_from=State) %>%
+  GGally::ggpairs(columns = 2:9)
+```
+
+Lag plots:
+
+```{r}
+aus_production %>%
+  filter(year(Quarter) >= 2000) %>% 
+  gg_lag(Beer, geom = "point")
+```
+
+Autocorrelation and partial-autocorrelation:
+
+```{r}
+aus_production %>% feasts::ACF(Beer) %>% autoplot()
+aus_production %>% feasts::PACF(Beer) %>% autoplot()
+```
+
+
+
+
+
+
+
+
