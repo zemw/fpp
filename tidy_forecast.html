@@ -1,0 +1,1266 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Tidy Forecast</title>
+
+<script src="tidy_forecast_files/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="tidy_forecast_files/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="tidy_forecast_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="tidy_forecast_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="tidy_forecast_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="tidy_forecast_files/navigation-1.1/tabsets.js"></script>
+<link href="tidy_forecast_files/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="tidy_forecast_files/highlightjs-9.12.0/highlight.js"></script>
+<link href="tidy_forecast_files/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
+<script src="tidy_forecast_files/pagedtable-1.1/js/pagedtable.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+<style type="text/css">
+  p.abstract{
+    text-align: center;
+    font-weight: bold;
+  }
+  div.abstract{
+    margin: auto;
+    width: 90%;
+  }
+</style>
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Tidy Forecast</h1>
+<div class="abstract">
+<p class="abstract">Abstract</p>
+This is super dry note based on Hyndman and Athanasopoulos’s <em>Forecasting: principles and practice (3rd edition)</em>, for quick reference to <code>tidyverts</code> applications.
+</div>
+
+</div>
+
+<div id="TOC">
+<ul>
+<li><a href="#forecasting-basics">Forecasting basics</a><ul>
+<li><a href="#simple-forecasting-methods">Simple forecasting methods</a><ul>
+<li><a href="#example-australian-beer-production">Example: Australian beer production</a></li>
+</ul></li>
+<li><a href="#residual-diagnostics">Residual diagnostics</a><ul>
+<li><a href="#example-google-stock-price">Example: Google stock price</a></li>
+</ul></li>
+<li><a href="#portmanteau-test">Portmanteau test</a><ul>
+<li><a href="#box-pierce-test">Box-Pierce test</a></li>
+<li><a href="#ljung-box-test">Ljung-Box test</a></li>
+</ul></li>
+<li><a href="#prediction-intervals">Prediction intervals</a><ul>
+<li><a href="#one-step-prediction-intervals">One-step prediction intervals</a></li>
+<li><a href="#multi-step-prediction-intervals">Multi-step prediction intervals</a></li>
+<li><a href="#prediction-intervals-from-bootstrap">Prediction intervals from bootstrap</a></li>
+<li><a href="#box-how-to-plot-forecasts">Box: How to plot forecasts?</a></li>
+</ul></li>
+<li><a href="#forecasting-with-decomposition">Forecasting with decomposition</a></li>
+<li><a href="#evaluating-point-forecast-accuracy">Evaluating point forecast accuracy</a><ul>
+<li><a href="#scale-dependent-errors">Scale-dependent errors</a></li>
+<li><a href="#percentage-errors">Percentage errors</a></li>
+<li><a href="#scaled-errors">Scaled errors</a></li>
+<li><a href="#example-stock-price-forecast-accuracy">Example: Stock price forecast accuracy</a></li>
+</ul></li>
+<li><a href="#evaluating-distributional-forecast-accuracy">Evaluating distributional forecast accuracy</a><ul>
+<li><a href="#quantile-score">Quantile score</a></li>
+<li><a href="#winkler-score">Winkler score</a></li>
+<li><a href="#continuous-ranked-probability-score">Continuous ranked probability score</a></li>
+<li><a href="#skill-score">Skill score</a></li>
+</ul></li>
+<li><a href="#time-series-cross-validation">Time series cross validation</a></li>
+</ul></li>
+<li><a href="#time-series-regression-models">Time series regression models</a><ul>
+<li><a href="#multiple-linear-regression">Multiple linear regression</a></li>
+<li><a href="#least-square-estimation">Least square estimation</a></li>
+<li><a href="#diagnostic-checking">Diagnostic checking</a><ul>
+<li><a href="#ljung-box-test-1">Ljung-Box test</a></li>
+<li><a href="#spurious-regression">Spurious regression</a></li>
+</ul></li>
+<li><a href="#model-selection">Model selection</a><ul>
+<li><a href="#cross-validation">Cross validation</a></li>
+<li><a href="#akaikes-information-criterion">Akaike’s Information Criterion</a></li>
+<li><a href="#schwarzs-bayesian-information-criterion">Schwarz’s Bayesian Information Criterion</a></li>
+</ul></li>
+<li><a href="#scenario-based-forecasting">Scenario based forecasting</a></li>
+</ul></li>
+<li><a href="#exponential-smoothing">Exponential smoothing</a><ul>
+<li><a href="#simple-exponential-smoothing">Simple exponential smoothing</a><ul>
+<li><a href="#example-algerian-exports">Example: Algerian exports</a></li>
+</ul></li>
+<li><a href="#method-with-trend">Method with trend</a><ul>
+<li><a href="#holts-linear-trend-method">Holt’s linear trend method</a></li>
+<li><a href="#damped-trend-methods">Damped trend methods</a></li>
+<li><a href="#example-australian-population">Example: Australian Population</a></li>
+</ul></li>
+<li><a href="#method-with-seasonality">Method with seasonality</a><ul>
+<li><a href="#holt-winters-additive-method">Holt-Winters’ additive method</a></li>
+<li><a href="#holt-winters-multiplicative-method">Holt-Winters’ multiplicative method</a></li>
+<li><a href="#example-domestic-overnight-trips-in-australia">Example: Domestic overnight trips in Australia</a></li>
+<li><a href="#summary-taxonomy-of-exponential-smoothing-methods">Summary: Taxonomy of exponential smoothing methods</a></li>
+</ul></li>
+<li><a href="#innovations-state-space-models">Innovations state space models</a></li>
+</ul></li>
+<li><a href="#arima-models">ARIMA models</a><ul>
+<li><a href="#time-series-properties">Time series properties</a><ul>
+<li><a href="#stationarity-and-unit-root">Stationarity and unit root</a></li>
+<li><a href="#acf-and-pacf">ACF and PACF</a></li>
+</ul></li>
+<li><a href="#non-seasonal-arima-models">Non-seasonal ARIMA models</a></li>
+<li><a href="#modelling-procedure-and-forecasting">Modelling procedure and forecasting</a><ul>
+<li><a href="#automatic-modelling">Automatic modelling</a></li>
+<li><a href="#manually-model-selection">Manually model selection</a></li>
+<li><a href="#forecasting-with-the-arima-model">Forecasting with the ARIMA model</a></li>
+</ul></li>
+<li><a href="#seasonal-arima-models">Seasonal ARIMA models</a><ul>
+<li><a href="#example-monthly-us-leisure-and-hospitality-employment">Example: Monthly US leisure and hospitality employment</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#dynamic-regression-models">Dynamic regression models</a><ul>
+<li><a href="#regression-with-arima-errors">Regression with ARIMA errors</a><ul>
+<li><a href="#example-us-personal-consumption-and-income">Example: US Personal Consumption and Income</a></li>
+</ul></li>
+<li><a href="#stochastic-and-deterministic-trends">Stochastic and deterministic trends</a></li>
+<li><a href="#dynamic-harmonic-regression">Dynamic harmonic regression</a><ul>
+<li><a href="#example-australian-eating-out-expenditure">Example: Australian eating out expenditure</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</div>
+
+<div id="forecasting-basics" class="section level1">
+<h1>Forecasting basics</h1>
+<div id="simple-forecasting-methods" class="section level2">
+<h2>Simple forecasting methods</h2>
+<p>Four simple forecasting methods:</p>
+<ul>
+<li><em>Average method</em>: forecast all future values to be the average value of the data</li>
+<li><em>Naive method</em>: simply set all forecasts to be the value of the last observation</li>
+<li><em>Seasonal naive method</em>: set the forecast to be equal to the last observed value from the same season</li>
+<li><em>Drift method</em>: set the forecast to be the value of the last observation with an increase or decrease equal to the average drift (change) seen in the historical data</li>
+</ul>
+<div id="example-australian-beer-production" class="section level3">
+<h3>Example: Australian beer production</h3>
+<pre class="r"><code>aus_production %&gt;% autoplot(Beer)</code></pre>
+<p><img src="tidy_forecast_files/figure-html/unnamed-chunk-2-1.png" width="5in" style="display: block; margin: auto;" /></p>
+<p>We use data from 1992Q1 to 2006Q4 as training data, and make forecast from 2007Q1 to 2010Q2.</p>
+<pre class="r"><code>train &lt;- aus_production %&gt;%
+  filter_index(&quot;1992 Q1&quot; ~ &quot;2006 Q4&quot;)</code></pre>
+<p>Fit the models with the four simple methods:</p>
+<pre class="r"><code># Fit the models
+beer_fit &lt;- train %&gt;%
+  model(
+    Mean = MEAN(Beer),
+    Naive = NAIVE(Beer),
+    SNaive = SNAIVE(Beer),
+    Drift = NAIVE(Beer ~ drift())
+  )
+# Generate forecasts for 14 quarters
+beer_fc &lt;- beer_fit %&gt;% forecast(h = 14)
+beer_fc</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[".model"],"name":[1],"type":["chr"],"align":["left"]},{"label":["Quarter"],"name":[2],"type":["qtr"],"align":["right"]},{"label":["Beer"],"name":[3],"type":["dist"],"align":["right"]},{"label":[".mean"],"name":[4],"type":["dbl"],"align":["right"]}],"data":[{"1":"Mean","2":"2007 Q1","3":"<dist>","4":"436.4500"},{"1":"Mean","2":"2007 Q2","3":"<dist>","4":"436.4500"},{"1":"Mean","2":"2007 Q3","3":"<dist>","4":"436.4500"},{"1":"Mean","2":"2007 Q4","3":"<dist>","4":"436.4500"},{"1":"Mean","2":"2008 Q1","3":"<dist>","4":"436.4500"},{"1":"Mean","2":"2008 Q2","3":"<dist>","4":"436.4500"},{"1":"Mean","2":"2008 Q3","3":"<dist>","4":"436.4500"},{"1":"Mean","2":"2008 Q4","3":"<dist>","4":"436.4500"},{"1":"Mean","2":"2009 Q1","3":"<dist>","4":"436.4500"},{"1":"Mean","2":"2009 Q2","3":"<dist>","4":"436.4500"},{"1":"Mean","2":"2009 Q3","3":"<dist>","4":"436.4500"},{"1":"Mean","2":"2009 Q4","3":"<dist>","4":"436.4500"},{"1":"Mean","2":"2010 Q1","3":"<dist>","4":"436.4500"},{"1":"Mean","2":"2010 Q2","3":"<dist>","4":"436.4500"},{"1":"Naive","2":"2007 Q1","3":"<dist>","4":"491.0000"},{"1":"Naive","2":"2007 Q2","3":"<dist>","4":"491.0000"},{"1":"Naive","2":"2007 Q3","3":"<dist>","4":"491.0000"},{"1":"Naive","2":"2007 Q4","3":"<dist>","4":"491.0000"},{"1":"Naive","2":"2008 Q1","3":"<dist>","4":"491.0000"},{"1":"Naive","2":"2008 Q2","3":"<dist>","4":"491.0000"},{"1":"Naive","2":"2008 Q3","3":"<dist>","4":"491.0000"},{"1":"Naive","2":"2008 Q4","3":"<dist>","4":"491.0000"},{"1":"Naive","2":"2009 Q1","3":"<dist>","4":"491.0000"},{"1":"Naive","2":"2009 Q2","3":"<dist>","4":"491.0000"},{"1":"Naive","2":"2009 Q3","3":"<dist>","4":"491.0000"},{"1":"Naive","2":"2009 Q4","3":"<dist>","4":"491.0000"},{"1":"Naive","2":"2010 Q1","3":"<dist>","4":"491.0000"},{"1":"Naive","2":"2010 Q2","3":"<dist>","4":"491.0000"},{"1":"SNaive","2":"2007 Q1","3":"<dist>","4":"438.0000"},{"1":"SNaive","2":"2007 Q2","3":"<dist>","4":"386.0000"},{"1":"SNaive","2":"2007 Q3","3":"<dist>","4":"405.0000"},{"1":"SNaive","2":"2007 Q4","3":"<dist>","4":"491.0000"},{"1":"SNaive","2":"2008 Q1","3":"<dist>","4":"438.0000"},{"1":"SNaive","2":"2008 Q2","3":"<dist>","4":"386.0000"},{"1":"SNaive","2":"2008 Q3","3":"<dist>","4":"405.0000"},{"1":"SNaive","2":"2008 Q4","3":"<dist>","4":"491.0000"},{"1":"SNaive","2":"2009 Q1","3":"<dist>","4":"438.0000"},{"1":"SNaive","2":"2009 Q2","3":"<dist>","4":"386.0000"},{"1":"SNaive","2":"2009 Q3","3":"<dist>","4":"405.0000"},{"1":"SNaive","2":"2009 Q4","3":"<dist>","4":"491.0000"},{"1":"SNaive","2":"2010 Q1","3":"<dist>","4":"438.0000"},{"1":"SNaive","2":"2010 Q2","3":"<dist>","4":"386.0000"},{"1":"Drift","2":"2007 Q1","3":"<dist>","4":"491.8136"},{"1":"Drift","2":"2007 Q2","3":"<dist>","4":"492.6271"},{"1":"Drift","2":"2007 Q3","3":"<dist>","4":"493.4407"},{"1":"Drift","2":"2007 Q4","3":"<dist>","4":"494.2542"},{"1":"Drift","2":"2008 Q1","3":"<dist>","4":"495.0678"},{"1":"Drift","2":"2008 Q2","3":"<dist>","4":"495.8814"},{"1":"Drift","2":"2008 Q3","3":"<dist>","4":"496.6949"},{"1":"Drift","2":"2008 Q4","3":"<dist>","4":"497.5085"},{"1":"Drift","2":"2009 Q1","3":"<dist>","4":"498.3220"},{"1":"Drift","2":"2009 Q2","3":"<dist>","4":"499.1356"},{"1":"Drift","2":"2009 Q3","3":"<dist>","4":"499.9492"},{"1":"Drift","2":"2009 Q4","3":"<dist>","4":"500.7627"},{"1":"Drift","2":"2010 Q1","3":"<dist>","4":"501.5763"},{"1":"Drift","2":"2010 Q2","3":"<dist>","4":"502.3898"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p>Plot forecasts against actual values.</p>
+<pre class="r"><code>beer_fc %&gt;%
+  autoplot(train, level = NULL) +
+  autolayer(
+    filter_index(aus_production, &quot;2007 Q1&quot; ~ .),
+    color = &quot;black&quot;
+  ) +
+  labs(
+    y = &quot;Megalitres&quot;,
+    title = &quot;Forecasts for quarterly beer production&quot;
+  ) +
+  guides(colour = guide_legend(title = &quot;Forecast&quot;))</code></pre>
+<p><img src="tidy_forecast_files/figure-html/unnamed-chunk-5-1.png" width="5in" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+<div id="residual-diagnostics" class="section level2">
+<h2>Residual diagnostics</h2>
+<p>A good forecasting method will yield innovation residuals with the following properties:</p>
+<ul>
+<li>The innovation residuals are uncorrelated. If there are correlations between innovation residuals, then there is information left in the residuals which should be used in computing forecasts.</li>
+<li>The innovation residuals have zero mean. If they have a mean other than zero, then the forecasts are biased.</li>
+</ul>
+<p>In addition to these essential properties, it is useful (but not necessary) for the residuals to also have the following two properties.</p>
+<ul>
+<li>The innovation residuals have constant variance.</li>
+<li>The innovation residuals are normally distributed.</li>
+</ul>
+<p>These two properties make the calculation of prediction intervals easier.</p>
+<div id="example-google-stock-price" class="section level3">
+<h3>Example: Google stock price</h3>
+<p>Stock prices are not observed every day (only trading days). There are implicit missing values (eg. weekends). We need to re-index based on trading days to make regular index intervals.</p>
+<pre class="r"><code>goog_2015 &lt;- gafa_stock %&gt;%
+  filter(Symbol == &quot;GOOG&quot;, year(Date) == 2015) %&gt;%
+  mutate(day = row_number()) %&gt;%
+  update_tsibble(index = day, regular = TRUE)</code></pre>
+<p>Checking residual mean and correlations:</p>
+<pre class="r"><code>goog_2015 %&gt;%
+  model(NAIVE(Adj_Close)) %&gt;%
+  gg_tsresiduals()</code></pre>
+<p><img src="tidy_forecast_files/figure-html/unnamed-chunk-7-1.png" width="5in" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+<div id="portmanteau-test" class="section level2">
+<h2>Portmanteau test</h2>
+<p>We can test whether the first <span class="math inline">\(l\)</span> autocorrelations are significantly different from what would be expected from a white noise process. A test for a group of autocorrelations is called a portmanteau test.</p>
+<div id="box-pierce-test" class="section level3">
+<h3>Box-Pierce test</h3>
+<p><span class="math display">\[ Q = T\sum_{k}^{l} \gamma_k^2 \]</span></p>
+</div>
+<div id="ljung-box-test" class="section level3">
+<h3>Ljung-Box test</h3>
+<p><span class="math display">\[ Q^* = T(T+2) \sum_{k}^{l} (T-k)^{-1} \gamma_k^2 \]</span> If the autocorrelations did come from a white noise series, then <span class="math inline">\(Q\)</span> and <span class="math inline">\(Q^*\)</span> would have a <span class="math inline">\(\chi^2\)</span> distribution with <span class="math inline">\((l-K)\)</span> degrees of freedom, where <span class="math inline">\(K\)</span> is the number of parameters in the model.</p>
+<pre class="r"><code>aug &lt;- goog_2015 %&gt;%
+  model(NAIVE(Close)) %&gt;%
+  augment()  # retrieve fitted value and residuals
+
+aug %&gt;% features(.innov, box_pierce, lag = 10, dof = 0)</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["Symbol"],"name":[1],"type":["chr"],"align":["left"]},{"label":[".model"],"name":[2],"type":["chr"],"align":["left"]},{"label":["bp_stat"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["bp_pvalue"],"name":[4],"type":["dbl"],"align":["right"]}],"data":[{"1":"GOOG","2":"NAIVE(Close)","3":"7.744517","4":"0.6537761"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<pre class="r"><code>aug %&gt;% features(.innov, ljung_box, lag = 10, dof = 0)</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["Symbol"],"name":[1],"type":["chr"],"align":["left"]},{"label":[".model"],"name":[2],"type":["chr"],"align":["left"]},{"label":["lb_stat"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["lb_pvalue"],"name":[4],"type":["dbl"],"align":["right"]}],"data":[{"1":"GOOG","2":"NAIVE(Close)","3":"7.914143","4":"0.6372231"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<div id="prediction-intervals" class="section level2">
+<h2>Prediction intervals</h2>
+<div id="one-step-prediction-intervals" class="section level3">
+<h3>One-step prediction intervals</h3>
+<p>When forecasting one step ahead, the standard deviation of the forecast distribution can be estimated using the standard deviation of the residuals given by</p>
+<p><span class="math display">\[ \hat{\sigma} = \sqrt{\frac{1}{T-K}}\sum_{t=1}^T e_t^2\]</span></p>
+</div>
+<div id="multi-step-prediction-intervals" class="section level3">
+<h3>Multi-step prediction intervals</h3>
+<p>A common feature of prediction intervals is that they usually increase in length as the forecast horizon increases. That is, <span class="math inline">\(\sigma_h\)</span> usually increases with <span class="math inline">\(h\)</span>.</p>
+<p>Compute prediction intervals:</p>
+<pre class="r"><code>goog_2015 %&gt;%
+  model(NAIVE(Adj_Close)) %&gt;%
+  forecast(h = 10) %&gt;%
+  hilo() </code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["Symbol"],"name":[1],"type":["chr"],"align":["left"]},{"label":[".model"],"name":[2],"type":["chr"],"align":["left"]},{"label":["day"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["Adj_Close"],"name":[4],"type":["dist"],"align":["right"]},{"label":[".mean"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["80%"],"name":[6],"type":["hilo"],"align":["right"]},{"label":["95%"],"name":[7],"type":["hilo"],"align":["right"]}],"data":[{"1":"GOOG","2":"NAIVE(Adj_Close)","3":"253","4":"<dist>","5":"758.88","6":"<hilo>","7":"<hilo>"},{"1":"GOOG","2":"NAIVE(Adj_Close)","3":"254","4":"<dist>","5":"758.88","6":"<hilo>","7":"<hilo>"},{"1":"GOOG","2":"NAIVE(Adj_Close)","3":"255","4":"<dist>","5":"758.88","6":"<hilo>","7":"<hilo>"},{"1":"GOOG","2":"NAIVE(Adj_Close)","3":"256","4":"<dist>","5":"758.88","6":"<hilo>","7":"<hilo>"},{"1":"GOOG","2":"NAIVE(Adj_Close)","3":"257","4":"<dist>","5":"758.88","6":"<hilo>","7":"<hilo>"},{"1":"GOOG","2":"NAIVE(Adj_Close)","3":"258","4":"<dist>","5":"758.88","6":"<hilo>","7":"<hilo>"},{"1":"GOOG","2":"NAIVE(Adj_Close)","3":"259","4":"<dist>","5":"758.88","6":"<hilo>","7":"<hilo>"},{"1":"GOOG","2":"NAIVE(Adj_Close)","3":"260","4":"<dist>","5":"758.88","6":"<hilo>","7":"<hilo>"},{"1":"GOOG","2":"NAIVE(Adj_Close)","3":"261","4":"<dist>","5":"758.88","6":"<hilo>","7":"<hilo>"},{"1":"GOOG","2":"NAIVE(Adj_Close)","3":"262","4":"<dist>","5":"758.88","6":"<hilo>","7":"<hilo>"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+<div id="prediction-intervals-from-bootstrap" class="section level3">
+<h3>Prediction intervals from bootstrap</h3>
+<p>We can simulate the next observation of a time series using</p>
+<p><span class="math display">\[y_{T+1} = \hat{y}_{T+1|T} + e_{T+1}\]</span></p>
+<p>where <span class="math inline">\(\hat{y}\)</span> is the fitted value from the model. <span class="math inline">\(e_{T+1}\)</span> is unknown, but can be approximated by errors in the past (residuals).</p>
+<p>Adding the new simulated value <span class="math inline">\(y_{T+1}\)</span> to the dataset, we can iteratedly simulate <span class="math inline">\(y_{T+2}, y_{T+3}, \dots\)</span></p>
+<p>Doing this repeatedly, we obtain many possible futures. This can be done using the <code>generate()</code> function.</p>
+<pre class="r"><code>goog_2015 %&gt;%
+  model(NAIVE(Close)) %&gt;%
+  generate(h = 30, times = 5, bootstrap = TRUE) -&gt; sim
+
+goog_2015 %&gt;%
+  ggplot(aes(x = day)) +
+  geom_line(aes(y = Close)) +
+  geom_line(aes(y = .sim, colour = as.factor(.rep)), data = sim) </code></pre>
+<p><img src="tidy_forecast_files/figure-html/unnamed-chunk-10-1.png" width="5in" style="display: block; margin: auto;" /></p>
+<p>By repeating predicting future paths thousands of times, we can compute prediction intervals by calculating percentiles of the future sample paths for each forecast horizon.</p>
+<pre class="r"><code>goog_2015 %&gt;%
+  model(NAIVE(Close)) %&gt;% 
+  forecast(h = 30, bootstrap = TRUE) -&gt; fc
+
+autoplot(fc, goog_2015)</code></pre>
+<p><img src="tidy_forecast_files/figure-html/unnamed-chunk-11-1.png" width="5in" style="display: block; margin: auto;" /></p>
+</div>
+<div id="box-how-to-plot-forecasts" class="section level3">
+<h3>Box: How to plot forecasts?</h3>
+<p><code>tabletools</code> provide convenient functions to plot forecast together with original data.</p>
+<pre class="r"><code># S3 method for fbl_ts
+autoplot(object, data = NULL, level = c(80, 95), show_gap = TRUE, ...)
+# S3 method for fbl_ts
+autolayer(object, data = NULL, level = c(80, 95), point_forecast = list(mean = mean), show_gap = TRUE, ...)</code></pre>
+<p>Arguments:</p>
+<ul>
+<li>object: A fable.</li>
+<li>data: A tsibble with the same key structure as the fable.</li>
+<li>level: The confidence level(s) for the plotted intervals.</li>
+<li>show_gap: Setting this to FALSE will connect the most recent value in data with the forecasts.</li>
+<li>point_forecast: The point forecast measure (eg. mean, medium) to be displayed in the plot.</li>
+</ul>
+</div>
+</div>
+<div id="forecasting-with-decomposition" class="section level2">
+<h2>Forecasting with decomposition</h2>
+<p>A time series can be decomposed into seasonal and seasonally-adjusted components.</p>
+<p><span class="math display">\[ y_t =  \hat{S_t} + \hat{A_t} \]</span></p>
+<p>Or, if a multiplicative decomposition has been used,</p>
+<p><span class="math display">\[ y_t = \hat{S_t} \hat{A_t} \]</span></p>
+<p>To forecast seasonal time series, seasonal components can be forecasted using the seasonal naive method, while seasonally-adjusted components can be forecasted with any non-seasonal methods such as naive method or drift method.</p>
+<p>This is made easy with the <code>decomposition_model()</code> function.</p>
+<pre class="r"><code>us_retail_employment &lt;- us_employment %&gt;%
+  filter(year(Month) &gt;= 1990, Title == &quot;Retail Trade&quot;)
+fit_dcmp &lt;- us_retail_employment %&gt;%
+  model(stlf = decomposition_model(
+    STL(Employed ~ trend(window = 7), robust = TRUE),
+    NAIVE(season_adjust)
+  ))
+fit_dcmp %&gt;%
+  forecast() %&gt;%
+  autoplot(us_retail_employment)+
+  labs(y = &quot;Number of people&quot;, title = &quot;Monthly US retail employment&quot;)</code></pre>
+<p><img src="tidy_forecast_files/figure-html/unnamed-chunk-13-1.png" width="5in" style="display: block; margin: auto;" /></p>
+</div>
+<div id="evaluating-point-forecast-accuracy" class="section level2">
+<h2>Evaluating point forecast accuracy</h2>
+<p>It is common practice to separate the available data into two portions, training data (in-sample data) and test data (out-of-sample data). The training data is used to estimate parameters of a forecasting method and the test data is used to evaluate its accuracy.</p>
+<p>A forecast “error” is defined as the difference between an observed value and its forecast.</p>
+<p><span class="math display">\[ e_{T+h} = y_{T+h} - \hat{y}_{T+h|T}\]</span> where the training data is given by <span class="math inline">\((y_1, \dots, y_T)\)</span> and the test data is given by <span class="math inline">\((y_{T+1}, y_{T+2}, \dots)\)</span>.</p>
+<div id="scale-dependent-errors" class="section level3">
+<h3>Scale-dependent errors</h3>
+<p>Mean absolute error: <span class="math inline">\(\text{MAE} = \text{mean} (|e_t|)\)</span></p>
+<p>Root mean squared error: <span class="math inline">\(\text{RMSE} = \sqrt{\text{mean} (e_t^2)}\)</span></p>
+<p>MAE and RMSE has the same scale as the original data, therefore cannot be used to make comparisons between series that involve different units..</p>
+</div>
+<div id="percentage-errors" class="section level3">
+<h3>Percentage errors</h3>
+<p>The percentage error is given by <span class="math inline">\(p_t=100e_t/y_t\)</span>. Percentage errors have the advantage of being unit-free.</p>
+<p>Mean absolute percentage error: <span class="math inline">\(\text{MAPE} = \text{mean}(|p_t|)\)</span>.</p>
+<p>Symmetric MAPE: <span class="math inline">\(\text{sMAPE} = \text{mean}\left(200|y_{t} - \hat{y}_{t}|/(y_{t}+\hat{y}_{t})\right)\)</span></p>
+<p>Symmetric MAPE is symmetric on negative errors and positive errors.</p>
+<p>Measures based on percentage errors have the disadvantage of being infinite or undefined if <span class="math inline">\(y_t = 0\)</span> for any t in the period of interest, and having extreme values if any <span class="math inline">\(y_t\)</span> is close to zero.</p>
+</div>
+<div id="scaled-errors" class="section level3">
+<h3>Scaled errors</h3>
+<p>Scaled errors is an alternative to using percentage errors when comparing forecast accuracy across series with different units.</p>
+<p><span class="math display">\[q_{j} = \frac{\displaystyle e_{j}}
+    {\displaystyle\frac{1}{T-1}\sum_{t=2}^T |y_{t}-y_{t-1}|}\]</span></p>
+<p>Mean absolute scaled error: <span class="math inline">\(\text{MASE} = \text{mean}(|q_{j}|)\)</span></p>
+<p>Root mean squared scaled error: <span class="math inline">\(\text{RMSSE} = \sqrt{\text{mean}(q_{j}^2)}\)</span></p>
+</div>
+<div id="example-stock-price-forecast-accuracy" class="section level3">
+<h3>Example: Stock price forecast accuracy</h3>
+<p>The <code>accuracy()</code> function automatically compute various accuracy measures.</p>
+<pre class="r"><code>goog_fit &lt;- goog_2015 %&gt;% 
+  slice(1:(n()-30)) %&gt;%
+  model(
+    Mean = MEAN(Close),
+    Naive = NAIVE(Close),
+    Drift = RW(Close ~ drift())
+  )
+goog_fc &lt;- goog_fit %&gt;% forecast(h=30)
+accuracy(goog_fc, goog_2015)</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[".model"],"name":[1],"type":["chr"],"align":["left"]},{"label":["Symbol"],"name":[2],"type":["chr"],"align":["left"]},{"label":[".type"],"name":[3],"type":["chr"],"align":["left"]},{"label":["ME"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["RMSE"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["MAE"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["MPE"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["MAPE"],"name":[8],"type":["dbl"],"align":["right"]},{"label":["MASE"],"name":[9],"type":["dbl"],"align":["right"]},{"label":["RMSSE"],"name":[10],"type":["dbl"],"align":["right"]},{"label":["ACF1"],"name":[11],"type":["dbl"],"align":["right"]}],"data":[{"1":"Drift","2":"GOOG","3":"Test","4":"13.70638","5":"17.40483","6":"14.31521","7":"1.806988","8":"1.889260","9":"2.041461","10":"1.534229","11":"0.5916754"},{"1":"Mean","2":"GOOG","3":"Test","4":"172.22133","5":"172.49810","6":"172.22133","7":"22.850280","8":"22.850280","9":"24.560114","10":"15.205643","11":"0.4799776"},{"1":"Naive","2":"GOOG","3":"Test","4":"27.96935","5":"29.62592","6":"27.96935","7":"3.696958","8":"3.696958","9":"3.988649","10":"2.611513","11":"0.4799776"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<div id="evaluating-distributional-forecast-accuracy" class="section level2">
+<h2>Evaluating distributional forecast accuracy</h2>
+<div id="quantile-score" class="section level3">
+<h3>Quantile score</h3>
+<p>Quantile score measures how well the observations <span class="math inline">\(y_t\)</span> fall into the quantile <span class="math inline">\(f_{p,t}\)</span> with probability <span class="math inline">\(p\)</span> as forecasted by the model. That is, we expect the observation <span class="math inline">\(y_t\)</span> to be less than <span class="math inline">\(f_{p,t}\)</span> with probability <span class="math inline">\(p\)</span>. If the frequency that the real observations fall into this quantile deviates than <span class="math inline">\(p\)</span>, there will be a penalty to the score. The more accurate, the smaller the score value.</p>
+<p><span class="math display">\[ Q_{p,t} = \begin{cases}
+  2(1 - p) \big(f_{p,t} - y_{t}\big), &amp; \text{if } y_{t} &lt; f_{p,t} \\
+  2p \big(y_{t} - f_{p,t}\big), &amp; \text{if } y_{t} \ge f_{p,t}  \end{cases} \]</span></p>
+<pre class="r"><code>goog_fc %&gt;%
+  filter(day == 230) %&gt;%
+  accuracy(goog_2015, list(qs=quantile_score), probs=0.10)</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[".model"],"name":[1],"type":["chr"],"align":["left"]},{"label":["Symbol"],"name":[2],"type":["chr"],"align":["left"]},{"label":[".type"],"name":[3],"type":["chr"],"align":["left"]},{"label":["qs"],"name":[4],"type":["dbl"],"align":["right"]}],"data":[{"1":"Drift","2":"GOOG","3":"Test","4":"10.33244"},{"1":"Mean","2":"GOOG","3":"Test","4":"48.74692"},{"1":"Naive","2":"GOOG","3":"Test","4":"11.68414"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+<div id="winkler-score" class="section level3">
+<h3>Winkler score</h3>
+<p>The Winkler score is defined as the length of the interval plus a penalty if the observation is outside the interval. The narrow the interval, the less the observations outside the interval, the smaller the score.</p>
+<p><span class="math display">\[ W_{\alpha,t} = \begin{cases}
+  (u_{\alpha,t} - \ell_{\alpha,t}) + \frac{2}{\alpha} (\ell_{\alpha,t} - y_t) &amp; \text{if } y_t &lt; \ell_{\alpha,t} \\
+  (u_{\alpha,t} - \ell_{\alpha,t})   &amp; \text{if }  \ell_{\alpha,t} \le y_t \le u_{\alpha,t} \\
+  (u_{\alpha,t} - \ell_{\alpha,t}) + \frac{2}{\alpha} (y_t - u_{\alpha,t}) &amp; \text{if } y_t &gt; u_{\alpha,t}.
+  \end{cases} \]</span></p>
+<pre class="r"><code>goog_fc %&gt;%
+  filter(day == 230) %&gt;%
+  accuracy(goog_2015, list(winkler = winkler_score), level=80)</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[".model"],"name":[1],"type":["chr"],"align":["left"]},{"label":["Symbol"],"name":[2],"type":["chr"],"align":["left"]},{"label":[".type"],"name":[3],"type":["chr"],"align":["left"]},{"label":["winkler"],"name":[4],"type":["dbl"],"align":["right"]}],"data":[{"1":"Drift","2":"GOOG","3":"Test","4":"83.44748"},{"1":"Mean","2":"GOOG","3":"Test","4":"958.05844"},{"1":"Naive","2":"GOOG","3":"Test","4":"82.24142"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+<div id="continuous-ranked-probability-score" class="section level3">
+<h3>Continuous ranked probability score</h3>
+<p>We can average the quantile scores over all values of <span class="math inline">\(p\)</span> to obtain the Continuous Ranked Probability Score or CRPS.</p>
+<pre class="r"><code>goog_fc %&gt;%
+  accuracy(goog_2015, list(crps = CRPS))</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[".model"],"name":[1],"type":["chr"],"align":["left"]},{"label":["Symbol"],"name":[2],"type":["chr"],"align":["left"]},{"label":[".type"],"name":[3],"type":["chr"],"align":["left"]},{"label":["crps"],"name":[4],"type":["dbl"],"align":["right"]}],"data":[{"1":"Drift","2":"GOOG","3":"Test","4":"13.76022"},{"1":"Mean","2":"GOOG","3":"Test","4":"136.19937"},{"1":"Naive","2":"GOOG","3":"Test","4":"18.04472"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+<div id="skill-score" class="section level3">
+<h3>Skill score</h3>
+<p>Skill scores compute a forecast accuracy measure relative to some benchmark method. It gives the proportion that one forecast method improves over the benchmark method.</p>
+<p><span class="math display">\[ \frac{\text{CRPS}_{\text{Naive}} - \text{CRPS}_{\text{Drift}}}{\text{CRPS}_{\text{Naive}}} \]</span></p>
+<pre class="r"><code>goog_fc %&gt;%
+  accuracy(goog_2015, list(skill = skill_score(CRPS)))</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[".model"],"name":[1],"type":["chr"],"align":["left"]},{"label":["Symbol"],"name":[2],"type":["chr"],"align":["left"]},{"label":[".type"],"name":[3],"type":["chr"],"align":["left"]},{"label":["skill"],"name":[4],"type":["dbl"],"align":["right"]}],"data":[{"1":"Drift","2":"GOOG","3":"Test","4":"0.2374381"},{"1":"Mean","2":"GOOG","3":"Test","4":"-6.5478777"},{"1":"Naive","2":"GOOG","3":"Test","4":"0.0000000"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p>The <code>skill_score()</code> function can be used with any accuracy measure.</p>
+</div>
+</div>
+<div id="time-series-cross-validation" class="section level2">
+<h2>Time series cross validation</h2>
+<p>This procedure is sometimes known as “evaluation on a rolling forecasting origin” because the “origin” at which the forecast is based rolls forward in time.</p>
+<p>The following diagram illustrates the series of training and test sets, where the blue observations form the training sets, and the red observations form the test sets (4 -step-ahead forecasts).</p>
+<p><img src="images/ccv1.png" width="5in" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>goog_2015_tr &lt;- goog_2015 %&gt;%
+  stretch_tsibble(.init = 3, .step = 1) %&gt;%
+  relocate(Date, Symbol, .id) 
+
+goog_2015_tr %&gt;%
+  filter(.id &lt; 250) %&gt;%
+  model(RW(Close ~ drift())) %&gt;%
+  forecast(h = 1) %&gt;%
+  accuracy(goog_2015)</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[".model"],"name":[1],"type":["chr"],"align":["left"]},{"label":["Symbol"],"name":[2],"type":["chr"],"align":["left"]},{"label":[".type"],"name":[3],"type":["chr"],"align":["left"]},{"label":["ME"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["RMSE"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["MAE"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["MPE"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["MAPE"],"name":[8],"type":["dbl"],"align":["right"]},{"label":["MASE"],"name":[9],"type":["dbl"],"align":["right"]},{"label":["RMSSE"],"name":[10],"type":["dbl"],"align":["right"]},{"label":["ACF1"],"name":[11],"type":["dbl"],"align":["right"]}],"data":[{"1":"RW(Close ~ drift())","2":"GOOG","3":"Test","4":"0.7264388","5":"11.26819","6":"7.26124","7":"0.1115235","8":"1.194024","9":"1.021556","10":"1.007374","11":"0.09848564"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<div id="time-series-regression-models" class="section level1">
+<h1>Time series regression models</h1>
+<div id="multiple-linear-regression" class="section level2">
+<h2>Multiple linear regression</h2>
+<p>The general form of a multiple regression model is</p>
+<p><span class="math display">\[ y_t = \beta_{0} + \beta_{1} x_{1,t} + \beta_{2} x_{2,t} + \cdots + \beta_{k} x_{k,t} + \varepsilon_t \]</span> where <span class="math inline">\(y\)</span> is the variable to be forecast and <span class="math inline">\(x_1, \dots, x_k\)</span> are <span class="math inline">\(k\)</span> predictor variables.</p>
+</div>
+<div id="least-square-estimation" class="section level2">
+<h2>Least square estimation</h2>
+<p>The <code>TSLM()</code> function fits a linear regression model to time series data.</p>
+<pre class="r"><code>fit.consMR &lt;- us_change %&gt;%
+  model(tslm = TSLM(Consumption ~ Income + Production + Unemployment + Savings))
+report(fit.consMR)</code></pre>
+<pre><code>## Series: Consumption 
+## Model: TSLM 
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -0.90555 -0.15821 -0.03608  0.13618  1.15471 
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)   0.253105   0.034470   7.343 5.71e-12 ***
+## Income        0.740583   0.040115  18.461  &lt; 2e-16 ***
+## Production    0.047173   0.023142   2.038   0.0429 *  
+## Unemployment -0.174685   0.095511  -1.829   0.0689 .  
+## Savings      -0.052890   0.002924 -18.088  &lt; 2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.3102 on 193 degrees of freedom
+## Multiple R-squared: 0.7683,  Adjusted R-squared: 0.7635
+## F-statistic:   160 on 4 and 193 DF, p-value: &lt; 2.22e-16</code></pre>
+<p>Plot fitted value against original data:</p>
+<pre class="r"><code>augment(fit.consMR) %&gt;%
+  ggplot(aes(x = Quarter)) +
+  geom_line(aes(y = Consumption, colour = &quot;Data&quot;)) +
+  geom_line(aes(y = .fitted, colour = &quot;Fitted&quot;)) +
+  scale_color_manual(values=c(Data=&quot;black&quot;,Fitted=&quot;red&quot;)) </code></pre>
+<p><img src="tidy_forecast_files/figure-html/unnamed-chunk-22-1.png" width="5in" style="display: block; margin: auto;" /></p>
+</div>
+<div id="diagnostic-checking" class="section level2">
+<h2>Diagnostic checking</h2>
+<p>Assumptions about the errors:</p>
+<ul>
+<li>they have mean zero; otherwise the forecasts will be systematically biased.</li>
+<li>they are not autocorrelated; otherwise the forecasts will be inefficient, as there is more information in the data that can be exploited.</li>
+<li>they are unrelated to the predictor variables; otherwise there would be more information that should be included in the systematic part of the model.</li>
+</ul>
+<p>Use the <code>gg_tsresiduals()</code> function to obtain residual diagnostics.</p>
+<pre class="r"><code>fit.consMR %&gt;% gg_tsresiduals()</code></pre>
+<p><img src="tidy_forecast_files/figure-html/unnamed-chunk-23-1.png" width="5in" style="display: block; margin: auto;" /></p>
+<div id="ljung-box-test-1" class="section level3">
+<h3>Ljung-Box test</h3>
+<pre class="r"><code>augment(fit.consMR) %&gt;%
+  features(.innov, ljung_box, lag = 10, dof = 5)</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[".model"],"name":[1],"type":["chr"],"align":["left"]},{"label":["lb_stat"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["lb_pvalue"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"tslm","2":"18.86532","3":"0.002036368"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+<div id="spurious-regression" class="section level3">
+<h3>Spurious regression</h3>
+<p>Regressing non-stationary time series can lead to spurious regressions.</p>
+<p>These appear to be related simply because they both trend upwards in the same manner</p>
+<p>Example: Australian air passengers on rice production in Guinea</p>
+<pre class="r"><code>aus_airpassengers %&gt;%
+  filter(Year &lt;= 2011) %&gt;%
+  left_join(guinea_rice, by = &quot;Year&quot;) %&gt;%
+  pivot_longer(!Year) %&gt;%
+  ggplot(aes(x=Year, y=value)) + 
+  geom_line() +
+  facet_grid(name~., scales = &quot;free&quot;)</code></pre>
+<p><img src="tidy_forecast_files/figure-html/unnamed-chunk-25-1.png" width="5in" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>spurious_fit &lt;- aus_airpassengers %&gt;%
+  filter(Year &lt;= 2011) %&gt;%
+  left_join(guinea_rice, by = &quot;Year&quot;) %&gt;%
+  model(TSLM(Passengers ~ Production))
+report(spurious_fit)</code></pre>
+<pre><code>## Series: Passengers 
+## Model: TSLM 
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -5.9448 -1.8917 -0.3272  1.8620 10.4210 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)   -7.493      1.203  -6.229 2.25e-07 ***
+## Production    40.288      1.337  30.135  &lt; 2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 3.239 on 40 degrees of freedom
+## Multiple R-squared: 0.9578,  Adjusted R-squared: 0.9568
+## F-statistic: 908.1 on 1 and 40 DF, p-value: &lt; 2.22e-16</code></pre>
+<p>Residual diagnostics:</p>
+<pre class="r"><code>spurious_fit %&gt;% gg_tsresiduals()</code></pre>
+<p><img src="tidy_forecast_files/figure-html/unnamed-chunk-27-1.png" width="5in" style="display: block; margin: auto;" /></p>
+<p>High <span class="math inline">\(R^2\)</span> and high residual autocorrelation can be signs of spurious regression.</p>
+</div>
+</div>
+<div id="model-selection" class="section level2">
+<h2>Model selection</h2>
+<div id="cross-validation" class="section level3">
+<h3>Cross validation</h3>
+<p>The procedure uses the following steps:</p>
+<ol style="list-style-type: decimal">
+<li>Remove observation <span class="math inline">\(t\)</span> from the data set, and fit the model using the remaining data. Then compute the error <span class="math inline">\(e_t^{*} = y_t - \hat{y_t}\)</span> for the omitted observation. (This is not the same as the residual because the <span class="math inline">\(t\)</span>-th observation was not used in estimating the value of <span class="math inline">\(\hat{y_t}\)</span>.</li>
+<li>Repeat step 1 for <span class="math inline">\(t=1,2,\dots, T\)</span></li>
+<li>Compute the MSE from <span class="math inline">\(e_1^*, \dots, e_T^*\)</span>. We shall call this the CV.</li>
+</ol>
+<p>The best model is the one with the smallest value of CV.</p>
+</div>
+<div id="akaikes-information-criterion" class="section level3">
+<h3>Akaike’s Information Criterion</h3>
+<p><span class="math display">\[ \text{AIC} = T\log\left(\frac{\text{SSE}}{T}\right) + 2(k+2) \]</span></p>
+<p>The idea here is to penalise the fit of the model (SSE) with the number of parameters that need to be estimated.</p>
+<p>The model with the minimum value of the AIC is often the best model for forecasting.</p>
+</div>
+<div id="schwarzs-bayesian-information-criterion" class="section level3">
+<h3>Schwarz’s Bayesian Information Criterion</h3>
+<p><span class="math display">\[ \text{BIC} = T\log\left(\frac{\text{SSE}}{T}\right) + (k+2)\log(T) \]</span></p>
+<p>BIC tends to choose the model wither fewer terms than AIC, because the BIC penalises the number of parameters more heavily than the AIC.</p>
+</div>
+</div>
+<div id="scenario-based-forecasting" class="section level2">
+<h2>Scenario based forecasting</h2>
+<p>In this setting, the forecaster assumes possible scenarios for the predictor variables that are of interest. For example, a US policy maker may be interested in comparing the predicted change in consumption when there is a constant growth of 1% and 0.5% respectively for income and savings.</p>
+<pre class="r"><code>fit_consBest &lt;- us_change %&gt;%
+  model(lm = TSLM(Consumption ~ Income + Savings + Unemployment))
+
+future_scenarios &lt;- scenarios(
+  Increase = new_data(us_change, 4) %&gt;%
+    mutate(Income=1, Savings=0.5, Unemployment=0),
+  Decrease = new_data(us_change, 4) %&gt;%
+    mutate(Income=-1, Savings=-0.5, Unemployment=0),
+  names_to = &quot;Scenario&quot;)
+
+fc &lt;- forecast(fit_consBest, new_data = future_scenarios)
+
+us_change %&gt;%
+  autoplot(Consumption) +
+  autolayer(fc) +
+  labs(title = &quot;US consumption&quot;, y = &quot;% change&quot;)</code></pre>
+<p><img src="tidy_forecast_files/figure-html/unnamed-chunk-28-1.png" width="5in" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+<div id="exponential-smoothing" class="section level1">
+<h1>Exponential smoothing</h1>
+<p>Forecasts produced using exponential smoothing methods are weighted averages of past observations, with the weights decaying exponentially as the observations get older. In other words, the more recent the observation the higher the associated weight.</p>
+<div id="simple-exponential-smoothing" class="section level2">
+<h2>Simple exponential smoothing</h2>
+<p>Simple exponential smoothing (SEM) forecasts are calculated by</p>
+<p><span class="math display">\[\begin{equation}
+  \hat{y}_{T+1|T} = \alpha y_T + \alpha(1-\alpha) y_{T-1} + \alpha(1-\alpha)^2 y_{T-2}+ \cdots
+\end{equation}\]</span></p>
+<p>Or written in a recursive form</p>
+<p><span class="math display">\[ \hat{y}_{T+1|T} = \alpha y_T + (1-\alpha) \hat{y}_{T|T-1} \]</span></p>
+<p>where <span class="math inline">\(0 \leq \alpha \leq 1\)</span> is the smoothing parameter. The one-step-ahead forecast for time <span class="math inline">\(T+1\)</span> is a weighted average of all of the observations in the series <span class="math inline">\(y_1,\dots, y_T\)</span>. The rate at which the weights decrease is controlled by the parameter <span class="math inline">\(\alpha\)</span>.</p>
+<p><strong>Component form</strong></p>
+<p>An alternative representation is the component form.</p>
+<p><span class="math display">\[\begin{align*}
+  \text{Forecast equation}  &amp;&amp; \hat{y}_{t+h|t} &amp; = \ell_{t}\\
+  \text{Smoothing equation} &amp;&amp; \ell_{t}        &amp; = \alpha y_{t} + (1 - \alpha)\ell_{t-1},
+\end{align*}\]</span></p>
+<p>where <span class="math inline">\(\ell_t\)</span> is the level (or the smoothed value) of the series at time <span class="math inline">\(t\)</span>.</p>
+<p><strong>Estimation of parameters</strong></p>
+<p>The unknown parameters of exponential smoothing method can be estimated by minimising the SSE (sum of squared errors).</p>
+<p><span class="math display">\[\begin{equation}
+ \text{SSE}=\sum_{t=1}^T(y_t - \hat{y}_{t|t-1})^2=\sum_{t=1}^Te_t^2
+\end{equation}\]</span></p>
+<div id="example-algerian-exports" class="section level3">
+<h3>Example: Algerian exports</h3>
+<pre class="r"><code>algeria_economy &lt;- global_economy %&gt;%
+  filter(Country == &quot;Algeria&quot;)
+
+algeria_economy %&gt;%
+  model(ETS(Exports ~ error(&quot;A&quot;) + trend(&quot;N&quot;) + season(&quot;N&quot;))) %&gt;%
+  forecast(h=5) %&gt;%
+  autoplot(algeria_economy)</code></pre>
+<p><img src="tidy_forecast_files/figure-html/unnamed-chunk-29-1.png" width="5in" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+<div id="method-with-trend" class="section level2">
+<h2>Method with trend</h2>
+<div id="holts-linear-trend-method" class="section level3">
+<h3>Holt’s linear trend method</h3>
+<p><span class="math display">\[\begin{align*}
+  \text{Forecast equation}&amp;&amp; \hat{y}_{t+h|t} &amp;= \ell_{t} + hb_{t} \\
+  \text{Level equation}   &amp;&amp; \ell_{t} &amp;= \alpha y_{t} + (1 - \alpha)(\ell_{t-1} + b_{t-1})\\
+  \text{Trend equation}   &amp;&amp; b_{t}    &amp;= \beta^*(\ell_{t} - \ell_{t-1}) + (1 -\beta^*)b_{t-1},
+\end{align*}\]</span></p>
+<p>where <span class="math inline">\(\ell_t\)</span> denotes an estimate of the level of the series at time <span class="math inline">\(t\)</span>, <span class="math inline">\(b_t\)</span> denotes an estimate of the trend (slope) of the series at time <span class="math inline">\(t\)</span>, <span class="math inline">\(\alpha\)</span> is the smoothing parameter for the level, and <span class="math inline">\(\beta^*\)</span> is the smoothing parameter for the trend.</p>
+<p>As with simple exponential smoothing, the level equation here shows that <span class="math inline">\(l_t\)</span> is a weighted average of observation <span class="math inline">\(y_t\)</span> and the one-step-ahead training forecast for time <span class="math inline">\(t\)</span>, here given by <span class="math inline">\(\ell_{t-1}+b_{t-1}\)</span>. The trend equation shows that <span class="math inline">\(b_t\)</span> is a weighted average of the estimated trend at time <span class="math inline">\(t\)</span> based on <span class="math inline">\(l_t - \ell_{t-1}\)</span> and <span class="math inline">\(b_{t-1}\)</span>, the previous estimate of the trend.</p>
+</div>
+<div id="damped-trend-methods" class="section level3">
+<h3>Damped trend methods</h3>
+<p>This method introduced a parameter that “dampens” the trend to a flat line some time in the future.</p>
+<p><span class="math display">\[\begin{align*}
+  \hat{y}_{t+h|t} &amp;= \ell_{t} + (\phi+\phi^2 + \dots + \phi^{h})b_{t} \\
+  \ell_{t} &amp;= \alpha y_{t} + (1 - \alpha)(\ell_{t-1} + \phi b_{t-1})\\
+  b_{t} &amp;= \beta^*(\ell_{t} - \ell_{t-1}) + (1 -\beta^*)\phi b_{t-1}.
+\end{align*}\]</span></p>
+<p>where <span class="math inline">\(\phi\)</span> is the damping parameter <span class="math inline">\(0&lt;\phi&lt;1\)</span> which dampens the trend as <span class="math inline">\(h\to\infty\)</span>.</p>
+</div>
+<div id="example-australian-population" class="section level3">
+<h3>Example: Australian Population</h3>
+<pre class="r"><code>aus_economy &lt;- global_economy %&gt;%
+  filter(Code == &quot;AUS&quot;) %&gt;%
+  mutate(Pop = Population / 1e6)
+aus_economy %&gt;%
+  model(
+    `Holt&#39;s method` = ETS(Pop ~ error(&quot;A&quot;) + trend(&quot;A&quot;) + season(&quot;N&quot;)),
+    `Damped Holt&#39;s method` = ETS(Pop ~ error(&quot;A&quot;) + trend(&quot;Ad&quot;, phi = 0.9) + season(&quot;N&quot;))
+  ) %&gt;%
+  forecast(h = 15) %&gt;%
+  autoplot(aus_economy, level = NULL)</code></pre>
+<p><img src="tidy_forecast_files/figure-html/unnamed-chunk-30-1.png" width="5in" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+<div id="method-with-seasonality" class="section level2">
+<h2>Method with seasonality</h2>
+<div id="holt-winters-additive-method" class="section level3">
+<h3>Holt-Winters’ additive method</h3>
+<p><span class="math display">\[\begin{align*}
+  \hat{y}_{t+h|t} &amp;= \ell_{t} + hb_{t} + s_{t+h-m(k+1)} \\
+  \ell_{t} &amp;= \alpha(y_{t} - s_{t-m}) + (1 - \alpha)(\ell_{t-1} + b_{t-1})\\
+  b_{t} &amp;= \beta^*(\ell_{t} - \ell_{t-1}) + (1 - \beta^*)b_{t-1}\\
+  s_{t} &amp;= \gamma^* (y_{t}-\ell_{t}) + (1-\gamma^*)s_{t-m},
+\end{align*}\]</span></p>
+<p><span class="math inline">\(m\)</span> denotes the frequency of the seasonality (eg. <span class="math inline">\(m=4\)</span> for quarterly data, <span class="math inline">\(m=12\)</span> for monthly data). <span class="math inline">\(k\)</span> is the <span class="math inline">\(\lfloor (h-1)/m \rfloor\)</span>, which ensures that the estimates of the seasonal indices used for forecasting come from the final year of the sample. The level equation shows a weighted average between the seasonally-adjusted observation <span class="math inline">\((y_t-s_{t-m})\)</span> and the non-seasonal forecast <span class="math inline">\((\ell_{t-1} + b_{t-1})\)</span>. The trend equation is identical to Holt’s linear method. The seasonal equation shows a weighted average between the current seasonal index <span class="math inline">\((y_t-l_t)\)</span> and the seasonal index of the same season last year.</p>
+</div>
+<div id="holt-winters-multiplicative-method" class="section level3">
+<h3>Holt-Winters’ multiplicative method</h3>
+<p><span class="math display">\[\begin{align*}
+  \hat{y}_{t+h|t} &amp;= (\ell_{t} + hb_{t})s_{t+h-m(k+1)} \\
+  \ell_{t} &amp;= \alpha \frac{y_{t}}{s_{t-m}} + (1 - \alpha)(\ell_{t-1} + b_{t-1})\\
+  b_{t} &amp;= \beta^*(\ell_{t}-\ell_{t-1}) + (1 - \beta^*)b_{t-1}                \\
+  s_{t} &amp;= \gamma \frac{y_{t}}{(\ell_{t-1} + b_{t-1})} + (1 - \gamma)s_{t-m}
+\end{align*}\]</span></p>
+</div>
+<div id="example-domestic-overnight-trips-in-australia" class="section level3">
+<h3>Example: Domestic overnight trips in Australia</h3>
+<pre class="r"><code>aus_holidays &lt;- tourism %&gt;%
+  filter(Purpose == &quot;Holiday&quot;) %&gt;%
+  summarise(Trips = sum(Trips)/1e3)
+
+aus_holidays %&gt;%
+  model(
+    additive = ETS(Trips ~ error(&quot;A&quot;) + trend(&quot;A&quot;) + season(&quot;A&quot;)),
+    multiplicative = ETS(Trips ~ error(&quot;M&quot;) + trend(&quot;A&quot;) + season(&quot;M&quot;))
+  ) %&gt;%
+  forecast(h = &quot;3 years&quot;) %&gt;%
+  autoplot(aus_holidays, level = NULL) </code></pre>
+<p><img src="tidy_forecast_files/figure-html/unnamed-chunk-31-1.png" width="5in" style="display: block; margin: auto;" /></p>
+</div>
+<div id="summary-taxonomy-of-exponential-smoothing-methods" class="section level3">
+<h3>Summary: Taxonomy of exponential smoothing methods</h3>
+<p><img src="images/ets1.png" width="5in" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+<div id="innovations-state-space-models" class="section level2">
+<h2>Innovations state space models</h2>
+<p>The exponential smoothing methods presented are algorithms which generate point forecasts. State space models are the statistical models that underlie the exponential smoothing methods.</p>
+<p><strong>ETS(A,N,N): simple exponential smoothing with additive errors</strong></p>
+<p><span class="math display">\[\begin{align*}
+  \text{Measurement equation} &amp;&amp; y_t &amp;= \ell_{t-1} + \varepsilon_t \\
+  \text{State equation} &amp;&amp; \ell_t&amp;=\ell_{t-1}+\alpha \varepsilon_t
+\end{align*}\]</span></p>
+<p>These two equations, together with the statistical distribution of the errors, form a fully specified statistical model. Specifically, these constitute an innovations state space model underlying simple exponential smoothing.</p>
+<p>The measurement equation shows the relationship between the observations and the unobserved states. The state equation shows the evolution of the state through time.</p>
+<p><strong>ETS(M,N,N): simple exponential smoothing with multiplicative errors</strong></p>
+<p><span class="math display">\[\begin{align*}
+  y_t&amp;=\ell_{t-1}(1+\varepsilon_t)\\
+  \ell_t&amp;=\ell_{t-1}(1+\alpha \varepsilon_t)
+\end{align*}\]</span></p>
+<p><strong>ETS(A,A,N): Holt’s linear method with additive errors</strong></p>
+<p><span class="math display">\[\begin{align*}
+y_t&amp;=\ell_{t-1}+b_{t-1}+\varepsilon_t\\
+\ell_t&amp;=\ell_{t-1}+b_{t-1}+\alpha \varepsilon_t\\
+b_t&amp;=b_{t-1}+\beta \varepsilon_t
+\end{align*}\]</span></p>
+<p><strong>ETS(M,A,N): Holt’s linear method with multiplicative errors</strong></p>
+<p><span class="math display">\[\begin{align*}
+y_t&amp;=(\ell_{t-1}+b_{t-1})(1+\varepsilon_t)\\
+\ell_t&amp;=(\ell_{t-1}+b_{t-1})(1+\alpha \varepsilon_t)\\
+b_t&amp;=b_{t-1}+\beta(\ell_{t-1}+b_{t-1}) \varepsilon_t
+\end{align*}\]</span></p>
+<p><strong>Other ETS models</strong></p>
+<p><img src="images/ets2.png" width="5in" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+<div id="arima-models" class="section level1">
+<h1>ARIMA models</h1>
+<div id="time-series-properties" class="section level2">
+<h2>Time series properties</h2>
+<div id="stationarity-and-unit-root" class="section level3">
+<h3>Stationarity and unit root</h3>
+<p>A stationary time series is one whose statistical properties do not depend on the time at which the series is observed. The existence of unit root is one common reason for non-stationarity.</p>
+<p>Existence of unit root can be tested with KPSS test. The null hypothesis is that the data are stationary. Small p-values lead to rejection of the null hypothesis, suggesting that differencing is required.</p>
+<pre class="r"><code>goog_2015 %&gt;%
+  features(Close, unitroot_kpss)</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["Symbol"],"name":[1],"type":["chr"],"align":["left"]},{"label":["kpss_stat"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["kpss_pvalue"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"GOOG","2":"3.560958","3":"0.01"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p>First difference:</p>
+<pre class="r"><code>goog_2015 %&gt;%
+  mutate(diff_close = difference(Close)) %&gt;%
+  features(diff_close, unitroot_kpss)</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["Symbol"],"name":[1],"type":["chr"],"align":["left"]},{"label":["kpss_stat"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["kpss_pvalue"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"GOOG","2":"0.0988669","3":"0.1"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p>This process of using a sequence of KPSS tests to determine the appropriate number of first differences is carried out using the <code>unitroot_ndiffs()</code> function.</p>
+<pre class="r"><code>goog_2015 %&gt;%
+  features(Close, unitroot_ndiffs)</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["Symbol"],"name":[1],"type":["chr"],"align":["left"]},{"label":["ndiffs"],"name":[2],"type":["int"],"align":["right"]}],"data":[{"1":"GOOG","2":"1"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+<div id="acf-and-pacf" class="section level3">
+<h3>ACF and PACF</h3>
+<p>ACF plot shows the autocorrelations which measure the relationship between <span class="math inline">\(y_t\)</span> and <span class="math inline">\(y_{t-k}\)</span>. PACF (partial autocorrelations) measure the relationship between <span class="math inline">\(y_t\)</span> and <span class="math inline">\(y_{t-k}\)</span> after removing the effects of lags <span class="math inline">\(1,2,3,\dots,k-1\)</span>.</p>
+<p>The data may follow an ARIMA<span class="math inline">\((p,d,0)\)</span> model if the ACF and PACF plots of the differenced data show the following patterns:</p>
+<ul>
+<li>the ACF is exponentially decaying or sinusoidal;</li>
+<li>there is a significant spike at lag <span class="math inline">\(p\)</span> in the PACF, but none beyond lag <span class="math inline">\(p\)</span>.</li>
+</ul>
+<p>The data may follow an ARIMA<span class="math inline">\((0,d,q)\)</span> model if the ACF and PACF plots of the differenced data show the following patterns:</p>
+<ul>
+<li>the PACF is exponentially decaying or sinusoidal;</li>
+<li>there is a significant spike at lag <span class="math inline">\(q\)</span> in the ACF, but none beyond lag <span class="math inline">\(q\)</span>.</li>
+</ul>
+<pre class="r"><code>global_economy %&gt;%
+  filter(Code == &quot;EGY&quot;) %&gt;%
+  ACF(Exports) %&gt;%
+  autoplot()</code></pre>
+<p><img src="tidy_forecast_files/figure-html/unnamed-chunk-37-1.png" width="5in" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>global_economy %&gt;%
+  filter(Code == &quot;EGY&quot;) %&gt;%
+  PACF(Exports) %&gt;%
+  autoplot()</code></pre>
+<p><img src="tidy_forecast_files/figure-html/unnamed-chunk-37-2.png" width="5in" style="display: block; margin: auto;" /></p>
+<p><code>gg_tsdisplay</code> plots a time series along with its ACF and PACF.</p>
+<pre class="r"><code>global_economy %&gt;%
+  filter(Code == &quot;EGY&quot;) %&gt;%
+  gg_tsdisplay(Exports, plot_type = &quot;partial&quot;)</code></pre>
+<p><img src="tidy_forecast_files/figure-html/unnamed-chunk-38-1.png" width="5in" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+<div id="non-seasonal-arima-models" class="section level2">
+<h2>Non-seasonal ARIMA models</h2>
+<p><strong>ARIMA <span class="math inline">\((p,d,q)\)</span> model</strong>: <span class="math inline">\(p\)</span> is the order of the autoregressive part; <span class="math inline">\(d\)</span> is the degree of first differencing involved; <span class="math inline">\(q\)</span> is the order of the moving average part.</p>
+<p><span class="math display">\[\begin{equation}
+  \begin{array}{c c c c}
+    (1-\phi_1B - \cdots - \phi_p B^p) &amp; (1-B)^d y_{t} &amp;= &amp;c + (1 + \theta_1 B + \cdots + \theta_q B^q)\varepsilon_t\\
+    {\uparrow} &amp; {\uparrow} &amp; &amp;{\uparrow}\\
+    \text{AR($p$)} &amp; \text{$d$ differences} &amp; &amp; \text{MA($q$)}\\
+  \end{array}
+\end{equation}\]</span></p>
+<p>The constant <span class="math inline">\(c\)</span> has an important effect on the long-term forecasts obtained from these models.</p>
+<ul>
+<li>If <span class="math inline">\(c=0\)</span> and <span class="math inline">\(d=0\)</span>, the long-term forecasts will go to zero.</li>
+<li>If <span class="math inline">\(c=0\)</span> and <span class="math inline">\(d=1\)</span>, the long-term forecasts will go to a non-zero constant.</li>
+<li>If <span class="math inline">\(c=0\)</span> and <span class="math inline">\(d=2\)</span>, the long-term forecasts will follow a straight line.</li>
+<li>If <span class="math inline">\(c\neq 0\)</span> and <span class="math inline">\(d\neq 0\)</span>, the long-term forecasts will go to the mean of the data.</li>
+<li>If <span class="math inline">\(c\neq 0\)</span> and <span class="math inline">\(d=1\)</span>, the long-term forecasts will follow a straight line.</li>
+<li>If <span class="math inline">\(c\neq 0\)</span> and <span class="math inline">\(d=2\)</span>, the long-term forecasts will follow a quadratic trend. (This is not recommended, and <code>fable</code> will not permit it.)</li>
+</ul>
+<p>The value of <span class="math inline">\(d\)</span> also has an effect on the prediction intervals – the higher the value of dd, the more rapidly the prediction intervals increase in size. For <span class="math inline">\(d=0\)</span>, the long-term forecast standard deviation will go to the standard deviation of the historical data, so the prediction intervals will all be essentially the same.</p>
+<p>The value of <span class="math inline">\(p\)</span> is important if the data show cycles. To obtain cyclic forecasts, it is necessary to have <span class="math inline">\(p \geq 2\)</span>, along with some additional conditions on the parameters. For an AR(2) model, cyclic behaviour occurs if <span class="math inline">\(\phi_1^2+4\phi_2&lt;0\)</span> (as is the case for the Egyptian Exports model). In that case, the average period of the cycles is <span class="math inline">\(\frac{2\pi}{\text{arc cos}(-\phi_1(1-\phi_2)/(4\phi_2))}\)</span>.</p>
+</div>
+<div id="modelling-procedure-and-forecasting" class="section level2">
+<h2>Modelling procedure and forecasting</h2>
+<div id="automatic-modelling" class="section level3">
+<h3>Automatic modelling</h3>
+<p><code>fable</code> automatic chooses the optimal parameters for ARIMA model with the following procedure:</p>
+<ol style="list-style-type: decimal">
+<li>The number of differences <span class="math inline">\(0 \leq d \leq 2\)</span> is determined using repeated KPSS tests.</li>
+<li>The values of pp and qq are then chosen by minimising the AICc after differencing the data dd times. Rather than considering every possible combination of <span class="math inline">\(p\)</span> and <span class="math inline">\(q\)</span>.</li>
+</ol>
+<pre class="r"><code>fit &lt;- global_economy %&gt;%
+  filter(Code == &quot;EGY&quot;) %&gt;%
+  model(ARIMA(Exports))
+report(fit)</code></pre>
+<pre><code>## Series: Exports 
+## Model: ARIMA(2,0,1) w/ mean 
+## 
+## Coefficients:
+##          ar1      ar2      ma1  constant
+##       1.6764  -0.8034  -0.6896    2.5623
+## s.e.  0.1111   0.0928   0.1492    0.1161
+## 
+## sigma^2 estimated as 8.046:  log likelihood=-141.57
+## AIC=293.13   AICc=294.29   BIC=303.43</code></pre>
+</div>
+<div id="manually-model-selection" class="section level3">
+<h3>Manually model selection</h3>
+<p>The following procedure provides a useful general approach for manually selecting models.</p>
+<ol style="list-style-type: decimal">
+<li>Plot the data and identify any unusual observations.</li>
+<li>If necessary, transform the data (using a Box-Cox transformation) to stabilise the variance.</li>
+<li>If the data are non-stationary, take first differences of the data until the data are stationary.</li>
+<li>Examine the ACF/PACF: Is an ARIMA<span class="math inline">\((p,d,0)\)</span> or ARIMA<span class="math inline">\((0,d,q)\)</span> model appropriate?</li>
+<li>Try your chosen model(s), and use the AICc to search for a better model.</li>
+<li>Check the residuals from your chosen model by plotting the ACF of the residuals, and doing a portmanteau test of the residuals. If they do not look like white noise, try a modified model.</li>
+<li>Once the residuals look like white noise, calculate forecasts.</li>
+</ol>
+<p>We can specify particular values using function <code>pdq()</code>:</p>
+<pre class="r"><code>fit2 &lt;- global_economy %&gt;%
+  filter(Code == &quot;EGY&quot;) %&gt;%
+  model(ARIMA(Exports ~ pdq(4,0,0)))
+report(fit2)</code></pre>
+<pre><code>## Series: Exports 
+## Model: ARIMA(4,0,0) w/ mean 
+## 
+## Coefficients:
+##          ar1      ar2     ar3      ar4  constant
+##       0.9861  -0.1715  0.1807  -0.3283    6.6922
+## s.e.  0.1247   0.1865  0.1865   0.1273    0.3562
+## 
+## sigma^2 estimated as 7.885:  log likelihood=-140.53
+## AIC=293.05   AICc=294.7   BIC=305.41</code></pre>
+<p>To select an ARIMA model with a constant, we could use <code>ARIMA(y ~ 1 + ...)</code>. Similarly, a constant can be excluded with <code>ARIMA(y ~ 0 + ...)</code>.</p>
+</div>
+<div id="forecasting-with-the-arima-model" class="section level3">
+<h3>Forecasting with the ARIMA model</h3>
+<pre class="r"><code>fit %&gt;% forecast(h=10) %&gt;%
+  autoplot(global_economy) +
+  labs(y = &quot;% of GDP&quot;, title = &quot;Egyptian Exports&quot;)</code></pre>
+<p><img src="tidy_forecast_files/figure-html/unnamed-chunk-41-1.png" width="5in" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+<div id="seasonal-arima-models" class="section level2">
+<h2>Seasonal ARIMA models</h2>
+<p>A seasonal ARIMA model is formed by including additional seasonal terms in the ARIMA models. It is written as ARIMA<span class="math inline">\((p,d,q)(P,D,Q)_m\)</span>.</p>
+<p>The seasonal part of the model consists of terms that are similar to the non-seasonal components of the model, but involve backshifts of the seasonal period. For example, an ARIMA<span class="math inline">\((1,1,1)(1,1,1)_4\)</span> model (without a constant) for quarterly data is</p>
+<p><span class="math display">\[(1 - \phi_{1}B)~(1 - \Phi_{1}B^{4}) (1 - B) (1 - B^{4})y_{t} =
+  (1 + \theta_{1}B)~ (1 + \Theta_{1}B^{4})\varepsilon_{t}\]</span></p>
+<p>The seasonal part of an AR or MA model will be seen in the seasonal lags of the PACF and ACF. For example, an ARIMA<span class="math inline">\((0,0,0)(0,0,1)_12\)</span> model will show:</p>
+<ul>
+<li>a spike at lag 12 in the ACF but no other significant spikes;</li>
+<li>exponential decay in the seasonal lags of the PACF (i.e., at lags 12, 24, 36, …).</li>
+</ul>
+<p>Similarly, an ARIMA<span class="math inline">\((0,0,0)(1,0,0)_12\)</span> model will show:</p>
+<ul>
+<li>exponential decay in the seasonal lags of the ACF;</li>
+<li>a single significant spike at lag 12 in the PACF.</li>
+</ul>
+<div id="example-monthly-us-leisure-and-hospitality-employment" class="section level3">
+<h3>Example: Monthly US leisure and hospitality employment</h3>
+<pre class="r"><code>leisure &lt;- us_employment %&gt;%
+  filter(Title == &quot;Leisure and Hospitality&quot;,
+         year(Month) &gt; 2000) %&gt;%
+  mutate(Employed = Employed/1000) %&gt;%
+  select(Month, Employed)
+leisure %&gt;% autoplot()</code></pre>
+<p><img src="tidy_forecast_files/figure-html/unnamed-chunk-42-1.png" width="5in" style="display: block; margin: auto;" /> Take a seasonal difference and then a first-difference to achieve stationarity.</p>
+<pre class="r"><code>leisure %&gt;% 
+  gg_tsdisplay(difference(Employed, 12) %&gt;% difference(), plot_type = &quot;partial&quot;)</code></pre>
+<p><img src="tidy_forecast_files/figure-html/unnamed-chunk-43-1.png" width="5in" style="display: block; margin: auto;" /></p>
+<p>Using the PACF to select the non-seasonal part of the model and the ACF to select the seasonal part of the model. The significant spike at lag 2 in the PACF suggest an AR(2) component. The significant spike at lag 12 in the ACF suggests a seasonal MA(1) component. Consequently, we start with an ARIMA<span class="math inline">\((2,1,0)(0,1,1)_12\)</span> model.</p>
+<pre class="r"><code>fit &lt;- leisure %&gt;%
+  model(
+    arima = ARIMA(Employed ~ pdq(2,1,0) + PDQ(0,1,1)),
+    auto = ARIMA(Employed, stepwise = FALSE, approx = FALSE)
+  )</code></pre>
+<p>Check residuals of the model:</p>
+<pre class="r"><code>fit %&gt;% select(arima) %&gt;% gg_tsresiduals(lag=36)</code></pre>
+<p><img src="tidy_forecast_files/figure-html/unnamed-chunk-45-1.png" width="5in" style="display: block; margin: auto;" /></p>
+<p>Forecasting:</p>
+<pre class="r"><code>forecast(fit, h=36) %&gt;%
+  autoplot(leisure) +
+  labs(title = &quot;US employment: leisure and hospitality&quot;)</code></pre>
+<p><img src="tidy_forecast_files/figure-html/unnamed-chunk-46-1.png" width="5in" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+</div>
+<div id="dynamic-regression-models" class="section level1">
+<h1>Dynamic regression models</h1>
+<p>ARIMS models only allow for the inclusion of information from past observations of a series, but not for the inclusion of other information that may also be relevant. We now consider how to extend ARIMA models in order to allow other information to be included in the models. We will allow the errors from a regression to contain autocorrelation. For example,</p>
+<p><span class="math display">\[\begin{align*}
+  y_t &amp;= \beta_0 + \beta_1 x_{1,t} + \dots + \beta_k x_{k,t} + \eta_t,\\
+      &amp; (1-\phi_1B)(1-B)\eta_t = (1+\theta_1B)\varepsilon_t,
+\end{align*}\]</span></p>
+<p>Notice that the model has two error terms here — the error from the regression model, which we denote by <span class="math inline">\(\eta_t\)</span>, and the error from the ARIMA model, which we denote by <span class="math inline">\(\epsilon_t\)</span>. Only the ARIMA model errors are assumed to be white noise.</p>
+<div id="regression-with-arima-errors" class="section level2">
+<h2>Regression with ARIMA errors</h2>
+<p>The <code>fable</code> function <code>ARIMA()</code> will fit a regression model with ARIMA errors if exogenous regressors are included in the formula.</p>
+<pre class="r"><code>ARIMA(y ~ x + pdq(1,1,0))</code></pre>
+<p>If <code>pdq()</code> is not specified, <code>ARIMA()</code> will automatically select the best ARIMA model for the errors.</p>
+<p>We may also include lagged predictors in the model:</p>
+<pre class="r"><code>ARIMA(y ~ x + lag(x) + lag(x,2) + pdq(1,1,0))</code></pre>
+<div id="example-us-personal-consumption-and-income" class="section level3">
+<h3>Example: US Personal Consumption and Income</h3>
+<pre class="r"><code>fit &lt;- us_change %&gt;%
+  model(ARIMA(Consumption ~ Income))
+report(fit)</code></pre>
+<pre><code>## Series: Consumption 
+## Model: LM w/ ARIMA(1,0,2) errors 
+## 
+## Coefficients:
+##          ar1      ma1     ma2  Income  intercept
+##       0.7070  -0.6172  0.2066  0.1976     0.5949
+## s.e.  0.1068   0.1218  0.0741  0.0462     0.0850
+## 
+## sigma^2 estimated as 0.3113:  log likelihood=-163.04
+## AIC=338.07   AICc=338.51   BIC=357.8</code></pre>
+<p>We can recover estimates of both the <span class="math inline">\(\eta_t\)</span> and <span class="math inline">\(\epsilon_t\)</span> series using the <code>residuals()</code> function.</p>
+<pre class="r"><code>bind_rows(
+    `Regression residuals` =
+        as_tibble(residuals(fit, type = &quot;regression&quot;)),
+    `ARIMA residuals` =
+        as_tibble(residuals(fit, type = &quot;innovation&quot;)),
+    .id = &quot;type&quot;
+  ) %&gt;%
+  ggplot(aes(x = Quarter, y = .resid)) +
+  geom_line() +
+  facet_grid(vars(type))</code></pre>
+<p><img src="tidy_forecast_files/figure-html/unnamed-chunk-50-1.png" width="5in" style="display: block; margin: auto;" /></p>
+<p>Check the residuals:</p>
+<pre class="r"><code>fit %&gt;% gg_tsresiduals()</code></pre>
+<p><img src="tidy_forecast_files/figure-html/unnamed-chunk-51-1.png" width="5in" style="display: block; margin: auto;" /></p>
+<p>To forecast using a regression model with ARIMA errors, we need to forecast the regression part of the model and the ARIMA part of the model, and combine the results. When the predictors are unknown, we must assume future values for each predictor.</p>
+<p>We will calculate forecasts for the next eight quarters assuming that the future percentage changes in personal disposable income will be equal to the mean value from the last forty years.</p>
+<pre class="r"><code>us_change_future &lt;- new_data(us_change, 8) %&gt;%
+  mutate(Income = mean(us_change$Income))
+
+forecast(fit, new_data = us_change_future) %&gt;%
+  autoplot(us_change) +
+  labs(y = &quot;Percentage change&quot;)</code></pre>
+<p><img src="tidy_forecast_files/figure-html/unnamed-chunk-52-1.png" width="5in" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+<div id="stochastic-and-deterministic-trends" class="section level2">
+<h2>Stochastic and deterministic trends</h2>
+<p>There are two different ways of modelling a linear trend. A deterministic trend is obtained using the regression model</p>
+<p><span class="math display">\[y_t = \beta_0 + \beta_1 t + \eta_t,\]</span></p>
+<p>where <span class="math inline">\(\eta_t\)</span> is an ARMA process. A stochastic trend is obtained using the model</p>
+<p><span class="math display">\[y_t = \beta_0 + \beta_1 t + \eta_t,\]</span></p>
+<p>where <span class="math inline">\(\eta_t\)</span> is an ARIMA process with <span class="math inline">\(d=1\)</span>.</p>
+<p>The deterministic trend model is obtained as follows:</p>
+<pre class="r"><code>fit_deterministic &lt;- aus_airpassengers %&gt;%
+  model(deterministic = ARIMA(Passengers ~ 1 + trend() + pdq(d = 0)))</code></pre>
+<p>Alternatively, the stochastic trend model can be estimated as follows:</p>
+<pre class="r"><code>fit_stochastic &lt;- aus_airpassengers %&gt;%
+  model(stochastic = ARIMA(Passengers ~ pdq(d = 1)))</code></pre>
+<p>The variance of a deterministic trend is constant around its trend. However, the variance of a stochastic trend increases over time. Therefore, stochastic trends have much wider prediction intervals.</p>
+<pre class="r"><code>aus_airpassengers %&gt;%
+  autoplot(Passengers) +
+  autolayer(fit_stochastic %&gt;% forecast(h = 20),
+    colour = &quot;blue&quot;, level = 95) +
+  autolayer(fit_deterministic %&gt;% forecast(h = 20),
+    colour = &quot;red&quot;, alpha = 0.5, level = 95)</code></pre>
+<p><img src="tidy_forecast_files/figure-html/unnamed-chunk-55-1.png" width="5in" style="display: block; margin: auto;" /></p>
+</div>
+<div id="dynamic-harmonic-regression" class="section level2">
+<h2>Dynamic harmonic regression</h2>
+<p>When there are long seasonal periods, a dynamic regression with Fourier terms is often better than other seasonality models.</p>
+<p>With monthly data (period = 12), <code>fourier()</code> will include various Fourier terms (sin and cos pairs) in the regression by specifying the parameter <span class="math inline">\(K\)</span>.</p>
+<p><span class="math display">\[\begin{align*}
+K = 1 &amp;&amp; \sin(\frac{\pi}{12}) &amp;&amp; \cos(\frac{\pi}{12}) \\
+K = 2 &amp;&amp; \sin(\frac{\pi}{12}) &amp;&amp; \cos(\frac{\pi}{12}) &amp;&amp; 
+         \sin(\frac{2\pi}{12}) &amp;&amp; \cos(\frac{2\pi}{12}) \\
+K = 3 &amp;&amp; \sin(\frac{\pi}{12}) &amp;&amp; \cos(\frac{\pi}{12}) &amp;&amp; 
+         \sin(\frac{2\pi}{12}) &amp;&amp; \cos(\frac{2\pi}{12}) &amp;&amp; 
+         \sin(\frac{3\pi}{12}) &amp;&amp; \cos(\frac{3\pi}{12}) \\
+\vdots 
+\end{align*}\]</span></p>
+<p>As <span class="math inline">\(K\)</span> increases the Fourier terms capture and project a more “wiggly” seasonal pattern. The maximum <span class="math inline">\(K\)</span> allowed is period/2.</p>
+<div id="example-australian-eating-out-expenditure" class="section level3">
+<h3>Example: Australian eating out expenditure</h3>
+<pre class="r"><code>aus_cafe &lt;- aus_retail %&gt;%
+  filter(
+    Industry == &quot;Cafes, restaurants and takeaway food services&quot;,
+    year(Month) %in% 2004:2018
+  ) %&gt;%
+  summarise(Turnover = sum(Turnover))
+
+fit &lt;- model(aus_cafe,
+  `K = 1` = ARIMA(log(Turnover) ~ fourier(K=1) + PDQ(0,0,0)),
+  `K = 2` = ARIMA(log(Turnover) ~ fourier(K=2) + PDQ(0,0,0)),
+  `K = 3` = ARIMA(log(Turnover) ~ fourier(K=3) + PDQ(0,0,0)),
+  `K = 4` = ARIMA(log(Turnover) ~ fourier(K=4) + PDQ(0,0,0)),
+  `K = 5` = ARIMA(log(Turnover) ~ fourier(K=5) + PDQ(0,0,0)),
+  `K = 6` = ARIMA(log(Turnover) ~ fourier(K=6) + PDQ(0,0,0))
+)
+
+fit %&gt;%
+  forecast(h = &quot;2 years&quot;) %&gt;%
+  autoplot(aus_cafe, level = 95) +
+  facet_wrap(vars(.model), ncol = 2) +
+  guides(colour = FALSE, fill = FALSE, level = FALSE) </code></pre>
+<p><img src="tidy_forecast_files/figure-html/unnamed-chunk-56-1.png" width="5in" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
