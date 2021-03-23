@@ -237,6 +237,13 @@ Generating white-noise:
 tsibble(period = 1:100, wn = rnorm(100), index = period) %>% autoplot(wn)
 ```
 
+Filtering on index:
+
+```{r, eval=FALSE}
+aus_production %>%
+  filter_index("1970 Q1" ~ "2004 Q4")
+```
+
 Aggregating over calendar periods:
 
 ```{r}
@@ -301,7 +308,11 @@ aus_production %>% feasts::PACF(Beer) %>% autoplot()
 ```
 
 
+### Reference
 
+Hyndman, R.J., & Athanasopoulos, G. (2021) Forecasting: principles and practice, 3rd edition, OTexts: Melbourne, Australia. OTexts.com/fpp3.
+
+Eric Zivot (2014) Working with Financial Time Series Data in R. 
 
 
 
